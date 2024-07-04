@@ -1,5 +1,7 @@
 package render
 
+import "os"
+
 type Page struct {
 	Title   string
 	Content []byte
@@ -7,10 +9,11 @@ type Page struct {
 
 // LoadPage loads a page
 func LoadPage(title, path string) (*Page, error) {
-	md, err := content.ReadFile(path)
+	md, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
+
 	html, err := markdownToHTML(md)
 	if err != nil {
 		return nil, err

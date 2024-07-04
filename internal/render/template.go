@@ -10,8 +10,8 @@ var (
 	templates = template.Must(template.ParseFS(content, tmplDir+"/index.html", tmplDir+"/notfound.html"))
 )
 
-// RenderTemplate renders the specified HTML template and returns it
-func RenderTemplate(tmpl string, p *Page) ([]byte, error) {
+// Template renders the specified HTML template and returns it
+func Template(tmpl string, p *Page) ([]byte, error) {
 	data := struct {
 		Title   string
 		Content string
