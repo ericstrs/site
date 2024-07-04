@@ -1,13 +1,16 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
+	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
+
+var ErrConfigNotFound = errors.New("config file not found and SITE_CONFIG environment variable is not set")
 
 // Config represents the layout of the configuration file.
 type Config struct {
@@ -19,6 +22,7 @@ type Config struct {
 	Nav         []NavItem          `yaml:"nav"`
 	Social      []NavItem          `yaml:"social"`
 	Port        int                `yaml:"port"`
+	DocsPath    string             `yaml:"docs_path"`
 }
 
 // SyntaxHighlighting contains settings for syntax highlighting themes.
@@ -38,17 +42,51 @@ type NavItem struct {
 	URL  string `yaml:"url"`
 }
 
-// LoadConfig attempts to load a configuration from a "config.yml" file
-// in the current directory. If the file does not exist, it falls back
-// to an environment variable to retrieve the config path.
+// LoadConfig loads or initializes the config file and ensures
+// the "docs" directory exists. It returns a pointer to the Config
+// struct and any error encountered during the process.
 func LoadConfig() (*Config, error) {
-	path := "config.yml"
-	_, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		path = os.Getenv("SITE_CONFIG")
-		if path == "" {
-			return nil, fmt.Errorf("config file not found and SITE_CONFIG environment variable is not set")
+	cfg, err := loadFile()
+	if err != nil {
+		if errors.Is(err, ErrConfigNotFound) {
+			path := "config.yml" // Default to "config.yml" in the current directory
+			if err := createConfigFile(path); err != nil {
+				return nil, fmt.Errorf("failed to create config file: %w", err)
+			}
+			cfg, err = loadFile()
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return nil, err
 		}
+	}
+
+	if cfg.DocsPath == "" {
+		docsPath, err := findDocsDir()
+		if err != nil {
+			docsPath = "docs" // Default to "docs" in current directory
+			if err := os.MkdirAll(docsPath, 0755); err != nil {
+				return nil, fmt.Errorf("failed to resolve docs path and failed to create docs directory: %w", err)
+			}
+		}
+
+		readmePath := filepath.Join(docsPath, "README.md")
+		if _, err := os.Create(readmePath); err != nil {
+			return nil, fmt.Errorf("failed to create README.md: %w", err)
+		}
+
+		cfg.DocsPath = docsPath
+	}
+
+	return cfg, nil
+}
+
+// loadFile attempts to read and unmarshal the configuration file.
+func loadFile() (*Config, error) {
+	path, err := findConfigDir()
+	if err != nil {
+		return nil, err
 	}
 
 	data, err := ioutil.ReadFile(path)
@@ -61,50 +99,65 @@ func LoadConfig() (*Config, error) {
 		return nil, fmt.Errorf("failed to unmarshal yaml: %w", err)
 	}
 
-	cfg.setDefaults()
-
-	// Validate the loaded config
-	if err := cfg.validate(); err != nil {
-		return nil, fmt.Errorf("invalid cfg: %w", err)
-	}
-
 	return &cfg, nil
 }
 
-// setDefaults sets required default values for the configuration
-func (c *Config) setDefaults() {
-	if c.Title == "" {
-		c.Title = "some title"
+// findConfigDir first attempts to locate the configuration file in the
+// current directory and then at SITE_CONFIG.
+func findConfigDir() (string, error) {
+	path := "config.yml"
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		path = os.Getenv("SITE_CONFIG")
+		if path == "" {
+			return "", ErrConfigNotFound
+		}
 	}
-	if c.URL == "" {
-		c.URL = "http://localhost"
-	}
-	if c.Port == 0 {
-		c.Port = 8080
-	}
-	if c.Theme == "" {
-		c.Theme = "default"
-	}
-	if c.Syntax.DarkMode.Theme == "" {
-		c.Syntax.DarkMode.Theme = "monokai"
-	}
-	if c.Syntax.LightMode.Theme == "" {
-		c.Syntax.LightMode.Theme = "github"
-	}
+	return path, nil
 }
 
-func (c *Config) validate() error {
-	var errors []string
+// createConfigFile creates a default configuration file.
+func createConfigFile(path string) error {
+	defaultConfig := &Config{
+		Title:       "some title",
+		Description: "",
+		URL:         "http://localhost",
+		Theme:       "default",
+		Port:        8080,
+		Syntax: SyntaxHighlighting{
+			DarkMode:  ThemeConfig{Theme: "monokai"},
+			LightMode: ThemeConfig{Theme: "github"},
+		},
+		Nav:    []NavItem{},
+		Social: []NavItem{},
+	}
 
-	if c.URL == "" {
-		errors = append(errors, "site URL is required")
-	}
-	if c.Port <= 0 {
-		errors = append(errors, "port must be a positive integer")
+	content, err := yaml.Marshal(defaultConfig)
+	if err != nil {
+		return fmt.Errorf("failed to marshal default config: %w", err)
 	}
 
-	if len(errors) > 0 {
-		return fmt.Errorf(strings.Join(errors, "\n"))
+	if err := ioutil.WriteFile(path, content, 0644); err != nil {
+		return fmt.Errorf("failed to write default config file: %w", err)
 	}
+
 	return nil
+}
+
+// findDocsDir attempts to locate the "docs" directory in the current directory.
+// If the "docs" directory does not exist, it falls back on DOCS_DIR to
+// retrieve the path to the docs directory.
+func findDocsDir() (string, error) {
+	path := "docs"
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		path = os.Getenv("DOCS_DIR")
+		if path == "" {
+			return "", fmt.Errorf("docs directory not found and DOCS_DIR environment variable is not set")
+		}
+	}
+	if _, err := os.Stat(path); err != nil {
+		return "", fmt.Errorf("failed to locate docs directory: %w", err)
+	}
+	return path, nil
 }
