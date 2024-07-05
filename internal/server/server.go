@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime/debug"
 	"strconv"
 	"syscall"
 	"time"
@@ -16,19 +17,29 @@ import (
 )
 
 func Serve() {
-	h := slog.NewJSONHandler(os.Stdout, nil)
+	var trace = string(debug.Stack())
+	var logLevel = new(slog.LevelVar)
+
+	opts := &slog.HandlerOptions{
+		AddSource: true,
+		Level:     logLevel,
+	}
+	h := slog.NewJSONHandler(os.Stdout, opts)
 	logger := slog.New(h)
+	slog.SetDefault(logger)
+
+	logLevel.Set(slog.LevelInfo)
 
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		logger.Error("Server failed", "err", err)
+		slog.Error("Server failed", "err", err, "trace", trace)
 		os.Exit(1)
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("GET /{$}", middleware.Logging(logger, handlers.Home(logger, cfg)))
+	mux.Handle("GET /{$}", middleware.LogRequest(handlers.Home(cfg)))
 
-	handler := middleware.PanicRecovery(logger, mux)
+	handler := middleware.PanicRecovery(mux)
 
 	portStr := strconv.Itoa(cfg.Port)
 	addr := cfg.Host + ":" + portStr
@@ -40,7 +51,7 @@ func Serve() {
 	go func() {
 		logger.Info("Server is starting...", "addr", server.Addr)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.Error("Server failed to serve", "err", err)
+			logger.Error("Server failed to serve", "err", err, "trace", trace)
 			os.Exit(1)
 		}
 	}()
@@ -56,7 +67,7 @@ func Serve() {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
-		logger.Error("Server shutdown failed", "err", err)
+		logger.Error("Server shutdown failed", "err", err, "trace", trace)
 		os.Exit(1)
 	}
 	logger.Info("Server gracefully stopped")

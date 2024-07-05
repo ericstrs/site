@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"runtime/debug"
 	"time"
 )
 
-// Logging middleware function for logging requests
-func Logging(logger *slog.Logger, next http.Handler) http.Handler {
+// LogRequest middleware function for logging requests
+func LogRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
@@ -22,7 +23,7 @@ func Logging(logger *slog.Logger, next http.Handler) http.Handler {
 			uri     = r.RequestURI
 		)
 
-		logger.Info("Request", "method", method, "took", took, "referer", referer, "remote_addr", addr, "uri", uri)
+		slog.Info("Request", "method", method, "took", took, "referer", referer, "remote_addr", addr, "uri", uri)
 	})
 }
 
@@ -45,12 +46,12 @@ func formatDuration(d time.Duration) string {
 
 // PanicRecovery is middleware for recovering from panics in `next` and
 // returning a StatusInternalServerError to the client.
-func PanicRecovery(logger *slog.Logger, next http.Handler) http.Handler {
+func PanicRecovery(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-				logger.Error("Server failed", "err", err)
+				slog.Error("Server failed", "err", err, "trace", string(debug.Stack()))
 			}
 		}()
 		next.ServeHTTP(w, r)
