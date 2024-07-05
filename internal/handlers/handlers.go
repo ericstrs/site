@@ -11,10 +11,8 @@ import (
 )
 
 // Home handles the home end point
-func Home(cfg *config.Config) http.HandlerFunc {
+func Home(logger *slog.Logger, cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-
 		var (
 			title    = cfg.Title
 			filePath = filepath.Join(cfg.DocsPath, "README.md")

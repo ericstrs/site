@@ -4,15 +4,12 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"os"
 	"time"
 )
 
 // Logging middleware function for logging requests
-func Logging(next http.Handler) http.Handler {
+func Logging(logger *slog.Logger, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-
 		start := time.Now()
 
 		next.ServeHTTP(w, r)
@@ -48,10 +45,9 @@ func formatDuration(d time.Duration) string {
 
 // PanicRecovery is middleware for recovering from panics in `next` and
 // returning a StatusInternalServerError to the client.
-func PanicRecovery(next http.Handler) http.Handler {
+func PanicRecovery(logger *slog.Logger, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
-			logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 			if err := recover(); err != nil {
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 				logger.Error("Server failed", "err", err)

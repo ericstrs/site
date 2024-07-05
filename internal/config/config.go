@@ -14,14 +14,14 @@ var ErrConfigNotFound = errors.New("config file not found and SITE_CONFIG enviro
 
 // Config represents the layout of the configuration file.
 type Config struct {
-	Title       string             `yaml:"site_title"`
-	URL         string             `yaml:"site_url"`
+	Title       string             `yaml:"title"`
+	Host        string             `yaml:"host"`
+	Port        int                `yaml:"port"`
 	Description string             `yaml:"description"`
 	Theme       string             `yaml:"theme"`
 	Syntax      SyntaxHighlighting `yaml:"syntax_highlighting"`
 	Nav         []NavItem          `yaml:"nav"`
 	Social      []NavItem          `yaml:"social"`
-	Port        int                `yaml:"port"`
 	DocsPath    string             `yaml:"docs_path"`
 }
 
@@ -121,9 +121,9 @@ func createConfigFile(path string) error {
 	defaultConfig := &Config{
 		Title:       "some title",
 		Description: "",
-		URL:         "http://localhost",
-		Theme:       "default",
+		Host:        "localhost",
 		Port:        8080,
+		Theme:       "default",
 		Syntax: SyntaxHighlighting{
 			DarkMode:  ThemeConfig{Theme: "monokai"},
 			LightMode: ThemeConfig{Theme: "github"},
