@@ -69,11 +69,11 @@ func LoadConfig() (*Config, error) {
 			if err := os.MkdirAll(docsPath, 0755); err != nil {
 				return nil, fmt.Errorf("failed to resolve docs path and failed to create docs directory: %w", err)
 			}
-		}
 
-		readmePath := filepath.Join(docsPath, "README.md")
-		if _, err := os.Create(readmePath); err != nil {
-			return nil, fmt.Errorf("failed to create README.md: %w", err)
+			readmePath := filepath.Join(docsPath, "README.md")
+			if _, err := os.Create(readmePath); err != nil {
+				return nil, fmt.Errorf("failed to create README.md: %w", err)
+			}
 		}
 
 		cfg.DocsPath = docsPath
