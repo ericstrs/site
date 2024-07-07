@@ -41,3 +41,103 @@ func Home(cfg *config.Config) http.HandlerFunc {
 		w.Write(output)
 	}
 }
+
+// About handles the about endpoint
+func About(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var (
+			title    = cfg.Title
+			filePath = filepath.Join(cfg.DocsPath, "about.md")
+
+			method = r.Method
+			uri    = r.URL.RequestURI()
+		)
+
+		p, err := render.LoadPage(title, filePath)
+		if err != nil {
+			slog.Error("failed to load about markdown file", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		output, err := render.Template("about", p)
+		if err != nil {
+			slog.Error("failed to execute html template", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(output)
+	}
+}
+
+// Notes handles the about endpoint
+func Notes(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var (
+			title    = cfg.Title
+			filePath = filepath.Join(cfg.DocsPath, "notes", "README.md")
+
+			method = r.Method
+			uri    = r.URL.RequestURI()
+		)
+
+		p, err := render.LoadPage(title, filePath)
+		if err != nil {
+			slog.Error("failed to load about markdown file", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		output, err := render.Template("notes", p)
+		if err != nil {
+			slog.Error("failed to execute html template", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(output)
+	}
+}
+
+// Note handles the about endpoint
+func Note(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var (
+			title    = cfg.Title
+			idStr    = r.PathValue("id")
+			filePath = filepath.Join(cfg.DocsPath, "notes", idStr, "README.md")
+
+			method = r.Method
+			uri    = r.URL.RequestURI()
+		)
+
+		p, err := render.LoadPage(title, filePath)
+		if err != nil {
+			slog.Warn("markdown file not found", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.NotFound(w, r)
+			return
+		}
+
+		output, err := render.Template("note", p)
+		if err != nil {
+			slog.Error("failed to execute html template", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(output)
+	}
+}
