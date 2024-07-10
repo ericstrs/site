@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"runtime/debug"
+	"strings"
 	"time"
 )
 
@@ -54,6 +55,36 @@ func PanicRecovery(next http.Handler) http.Handler {
 				slog.Error("Server failed", "err", err, "trace", string(debug.Stack()))
 			}
 		}()
+		next.ServeHTTP(w, r)
+	})
+}
+
+// SecurityHeaders middleware function for logging requests
+func SecurityHeaders(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		csp := []string{
+			"default-src 'self'",
+			"form-action 'self'",
+			"object-src 'none'",
+			"frame-ancestors 'none'",
+			"upgrade-insecure-requests",
+			"block-all-mixed-content",
+		}
+
+		w.Header().Set("Content-Security-Policy", strings.Join(csp, "; "))
+		w.Header().Set("Strict-Transport-Security", "max-age=604800; includeSubDomains")
+		w.Header().Set("X-Frame-Options", "deny")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("X-XSS-Protection", "0")
+		w.Header().Set("X-Permitted-Cross-Domain-Policies", "none")
+		w.Header().Set("Referrer-Policy", "no-referrer")
+		w.Header().Set("Cross-Origin-Embedder-Policy", "require-corp")
+		w.Header().Set("Cross-Origin-Opener-Policy", "same-origin")
+		w.Header().Set("Cross-Origin-Resource-Policy", "same-origin")
+		w.Header().Set("Cache-Control", "no-store, max-age=0")
+
+		w.Header().Set("Server", "")
+
 		next.ServeHTTP(w, r)
 	})
 }
