@@ -41,6 +41,8 @@ func Serve() {
 	mux.Handle("GET /about", middleware.LogRequest(handlers.About(cfg)))
 	mux.Handle("GET /notes", middleware.LogRequest(handlers.Notes(cfg)))
 	mux.Handle("GET /notes/{id}", middleware.LogRequest(handlers.Note(cfg)))
+	mux.Handle("GET /blogs", middleware.LogRequest(handlers.Blogs(cfg)))
+	mux.Handle("GET /blogs/{id}", middleware.LogRequest(handlers.Blog(cfg)))
 
 	handler := middleware.PanicRecovery(mux)
 

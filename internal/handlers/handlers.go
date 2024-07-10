@@ -75,7 +75,7 @@ func About(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-// Notes handles the about endpoint
+// Notes handles the notes endpoint
 func Notes(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var (
@@ -108,13 +108,80 @@ func Notes(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-// Note handles the about endpoint
+// Note handles the note endpoint
 func Note(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var (
 			title    = cfg.Title
 			idStr    = r.PathValue("id")
 			filePath = filepath.Join(cfg.DocsPath, "notes", idStr, "README.md")
+
+			method = r.Method
+			uri    = r.URL.RequestURI()
+		)
+
+		p, err := render.LoadPage(title, filePath)
+		if err != nil {
+			slog.Warn("markdown file not found", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.NotFound(w, r)
+			return
+		}
+
+		output, err := render.Template("note", p)
+		if err != nil {
+			slog.Error("failed to execute html template", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(output)
+	}
+}
+
+// Blogs handles the blogs endpoint
+func Blogs(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var (
+			title    = cfg.Title
+			filePath = filepath.Join(cfg.DocsPath, "blogs", "README.md")
+
+			method = r.Method
+			uri    = r.URL.RequestURI()
+		)
+
+		p, err := render.LoadPage(title, filePath)
+		if err != nil {
+			slog.Error("failed to load about markdown file", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		output, err := render.Template("blogs", p)
+		if err != nil {
+			slog.Error("failed to execute html template", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(output)
+	}
+}
+
+// Blog handles the blog endpoint
+func Blog(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var (
+			title    = cfg.Title
+			idStr    = r.PathValue("id")
+			filePath = filepath.Join(cfg.DocsPath, "blogs", idStr, "README.md")
 
 			method = r.Method
 			uri    = r.URL.RequestURI()

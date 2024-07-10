@@ -12,7 +12,10 @@ var (
 	aboutPath = tmplDir + "/about.html"
 	notesPath = tmplDir + "/notes.html"
 	notePath  = tmplDir + "/note.html"
-	templates = template.Must(template.ParseFS(content, homePath, nfPath, aboutPath, notesPath, notePath))
+	blogsPath = tmplDir + "/blogs.html"
+	blogPath  = tmplDir + "/blog.html"
+	templates = template.Must(template.ParseFS(content, homePath, nfPath,
+		aboutPath, notesPath, notePath, blogsPath, blogPath))
 )
 
 // Template renders the specified HTML template and returns it

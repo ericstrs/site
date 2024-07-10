@@ -1,23 +1,22 @@
-# ericstrs
+# Welcome!
 
-WELCOME
+This is my website ;^)
 
-This is a list with several points:
+This is a list
 
-* this is one
-* this is three
-* this is four[^f]
+* inside
+* out
 
-> Tell me and I forget. Show me and I remember. Involve me and I understand.
+This is a codeblock!
 
 ```go
-package main
-
 func main() {
-  fmt.Println("plantasia")
+  printf("intermission\n")
 }
 ```
 
-[this is a fake link](/)
+This is a foot[^f]note.
+
+This is a test to see how goldmark handles the character >.
 
 [^f]: bobo!
