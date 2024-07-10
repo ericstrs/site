@@ -1,0 +1,25 @@
+# Site Configuration
+title: "ericstrs"
+url: "http://localhost"
+port: 8080
+description: "My personal website where I share my thoughts and experiences on technology and life."
+syntax_highlighting:
+  dark_mode:
+    theme: "gruvbox"
+
+# Navigation Menu
+nav:
+  - name: "Home"
+    url: "/"
+  - name: "Blog"
+    url: "/blog"
+  - name: "Notes"
+    url: "/notes"
+  - name: "About"
+    url: "/about"
+
+social:
+  - name: "Twitter"
+    url: "https://twitter.com/ericstrs"
+  - name: "GitHub"
+    url: "https://github.com/ericstrs"
