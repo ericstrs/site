@@ -4,6 +4,8 @@
     <title>{{.Title}}</title>
 </head>
 <body>
+    {{template "header" .}}
+
     {{.Content}}
 
     <a href="/blogs">
@@ -29,5 +31,7 @@
         </li>
         {{end}}
     </ul>
+
+    {{template "footer" .}}
 </body>
 </html>

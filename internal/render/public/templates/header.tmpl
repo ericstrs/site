@@ -1,0 +1,12 @@
+{{ define "header" }}
+<header>
+  <nav>
+    <ul>
+      {{.Title}}
+      {{range .Nav}}
+        <li><a href="{{.URL}}">{{.Name}}</a></li>
+      {{end}}
+    </ul>
+  </nav>
+</header>
+{{end}}

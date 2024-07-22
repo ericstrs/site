@@ -4,6 +4,10 @@
     <title>{{.Title}}</title>
 </head>
 <body>
+    {{template "header" .}}
+
     {{.Content}}
+
+    {{template "footer" .}}
 </body>
 </html>

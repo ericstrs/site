@@ -6,15 +6,17 @@ import (
 )
 
 var (
-	tmplDir   = "public/templates"
-	homePath  = tmplDir + "/home.html" // path to the home html page
-	nfPath    = tmplDir + "/notfound.html"
-	aboutPath = tmplDir + "/about.html"
-	notesPath = tmplDir + "/notes.html"
-	notePath  = tmplDir + "/note.html"
-	blogsPath = tmplDir + "/blogs.html"
-	blogPath  = tmplDir + "/blog.html"
-	templates = template.Must(template.ParseFS(content, homePath, nfPath,
+	tmplDir    = "public/templates"
+	headerPath = tmplDir + "/header.tmpl"
+	footerPath = tmplDir + "/footer.tmpl"
+	homePath   = tmplDir + "/home.html" // path to the home html page
+	nfPath     = tmplDir + "/notfound.html"
+	aboutPath  = tmplDir + "/about.html"
+	notesPath  = tmplDir + "/notes.html"
+	notePath   = tmplDir + "/note.html"
+	blogsPath  = tmplDir + "/blogs.html"
+	blogPath   = tmplDir + "/blog.html"
+	templates  = template.Must(template.ParseFS(content, headerPath, footerPath, homePath, nfPath,
 		aboutPath, notesPath, notePath, blogsPath, blogPath))
 )
 
