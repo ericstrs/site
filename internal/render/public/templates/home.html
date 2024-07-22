@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.Title}}</title>
+</head>
+<body>
+    {{.Content}}
+
+    <h2>Recent Blogs</h2>
+    <ul>
+        {{range .RecentBlogs}}
+        <li>
+            <a href="/blogs/{{.Id}}">{{.Title}}</a>
+            <small>Updated: {{.UpdatedAt.Format "2006-01-02"}}</small>
+        </li>
+        {{end}}
+    </ul>
+
+    <h2>Recent Notes</h2>
+    <ul>
+        {{range .RecentNotes}}
+        <li>
+            <a href="/notes/{{.Id}}">{{.Title}}</a>
+            <small>Updated: {{.UpdatedAt.Format "2006-01-02"}}</small>
+        </li>
+        {{end}}
+    </ul>
+</body>
+</html>

@@ -29,7 +29,7 @@ func Home(cfg *config.Config) http.HandlerFunc {
 			return
 		}
 
-		output, err := render.Template("index", p)
+		output, err := render.Template("home", p)
 		if err != nil {
 			slog.Error("failed to execute html template", "err", err,
 				"method", method, "uri", uri,

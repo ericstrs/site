@@ -15,8 +15,4 @@ func main() {
 }
 ```
 
-This is a foot[^f]note.
-
 This is a test to see how goldmark handles the character >.
-
-[^f]: bobo!
