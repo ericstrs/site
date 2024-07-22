@@ -5,5 +5,14 @@
 </head>
 <body>
     {{.Content}}
+
+		<ul>
+        {{range .Blogs}}
+        <li>
+            <a href="/blogs/{{.Id}}">{{.Title}}</a>
+            <small>Updated: {{.UpdatedAt.Format "2006-01-02"}}</small>
+        </li>
+        {{end}}
+    </ul>
 </body>
 </html>

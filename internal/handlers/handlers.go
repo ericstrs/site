@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"html/template"
 	"log/slog"
 	"net/http"
 	"path/filepath"
@@ -29,7 +30,36 @@ func Home(cfg *config.Config) http.HandlerFunc {
 			return
 		}
 
-		output, err := render.Template("home", p)
+		recentBlogs, err := render.RecentContent("blogs", 5)
+		if err != nil {
+			slog.Error("failed to retrieve recent blogs", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+		recentNotes, err := render.RecentContent("notes", 5)
+		if err != nil {
+			slog.Error("failed to retrieve recent notes", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		data := struct {
+			Title       string
+			Content     template.HTML
+			RecentBlogs []render.Content
+			RecentNotes []render.Content
+		}{
+			Title:       p.Title,
+			Content:     template.HTML(string(p.Content)),
+			RecentBlogs: recentBlogs,
+			RecentNotes: recentNotes,
+		}
+
+		output, err := render.Template("home", data)
 		if err != nil {
 			slog.Error("failed to execute html template", "err", err,
 				"method", method, "uri", uri,
@@ -62,7 +92,15 @@ func About(cfg *config.Config) http.HandlerFunc {
 			return
 		}
 
-		output, err := render.Template("about", p)
+		data := struct {
+			Title   string
+			Content template.HTML
+		}{
+			Title:   p.Title,
+			Content: template.HTML(string(p.Content)),
+		}
+
+		output, err := render.Template("about", data)
 		if err != nil {
 			slog.Error("failed to execute html template", "err", err,
 				"method", method, "uri", uri,
@@ -95,7 +133,26 @@ func Notes(cfg *config.Config) http.HandlerFunc {
 			return
 		}
 
-		output, err := render.Template("notes", p)
+		notes, err := render.AllContent("notes")
+		if err != nil {
+			slog.Error("failed to retrieve notes", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		data := struct {
+			Title   string
+			Content template.HTML
+			Notes   []render.Content
+		}{
+			Title:   p.Title,
+			Content: template.HTML(string(p.Content)),
+			Notes:   notes,
+		}
+
+		output, err := render.Template("notes", data)
 		if err != nil {
 			slog.Error("failed to execute html template", "err", err,
 				"method", method, "uri", uri,
@@ -129,7 +186,15 @@ func Note(cfg *config.Config) http.HandlerFunc {
 			return
 		}
 
-		output, err := render.Template("note", p)
+		data := struct {
+			Title   string
+			Content template.HTML
+		}{
+			Title:   p.Title,
+			Content: template.HTML(string(p.Content)),
+		}
+
+		output, err := render.Template("note", data)
 		if err != nil {
 			slog.Error("failed to execute html template", "err", err,
 				"method", method, "uri", uri,
@@ -162,7 +227,26 @@ func Blogs(cfg *config.Config) http.HandlerFunc {
 			return
 		}
 
-		output, err := render.Template("blogs", p)
+		blogs, err := render.AllContent("blogs")
+		if err != nil {
+			slog.Error("failed to retrieve blogs", "err", err,
+				"method", method, "uri", uri,
+			)
+			http.Error(w, "error: something went wrong", http.StatusInternalServerError)
+			return
+		}
+
+		data := struct {
+			Title   string
+			Content template.HTML
+			Blogs   []render.Content
+		}{
+			Title:   p.Title,
+			Content: template.HTML(string(p.Content)),
+			Blogs:   blogs,
+		}
+
+		output, err := render.Template("blogs", data)
 		if err != nil {
 			slog.Error("failed to execute html template", "err", err,
 				"method", method, "uri", uri,
@@ -196,7 +280,15 @@ func Blog(cfg *config.Config) http.HandlerFunc {
 			return
 		}
 
-		output, err := render.Template("note", p)
+		data := struct {
+			Title   string
+			Content template.HTML
+		}{
+			Title:   p.Title,
+			Content: template.HTML(string(p.Content)),
+		}
+
+		output, err := render.Template("note", data)
 		if err != nil {
 			slog.Error("failed to execute html template", "err", err,
 				"method", method, "uri", uri,
