@@ -50,12 +50,14 @@ func Home(cfg *config.Config) http.HandlerFunc {
 		data := struct {
 			Nav         []config.NavItem
 			Title       string
+			Description string
 			Content     template.HTML
 			RecentBlogs []render.Content
 			RecentNotes []render.Content
 		}{
 			Nav:         cfg.Nav,
 			Title:       p.Title,
+			Description: cfg.Description,
 			Content:     template.HTML(string(p.Content)),
 			RecentBlogs: recentBlogs,
 			RecentNotes: recentNotes,
@@ -95,13 +97,15 @@ func About(cfg *config.Config) http.HandlerFunc {
 		}
 
 		data := struct {
-			Nav     []config.NavItem
-			Title   string
-			Content template.HTML
+			Nav         []config.NavItem
+			Title       string
+			Description string
+			Content     template.HTML
 		}{
-			Nav:     cfg.Nav,
-			Title:   p.Title,
-			Content: template.HTML(string(p.Content)),
+			Nav:         cfg.Nav,
+			Title:       p.Title,
+			Description: cfg.Description,
+			Content:     template.HTML(string(p.Content)),
 		}
 
 		output, err := render.Template("about", data)
@@ -147,15 +151,17 @@ func Notes(cfg *config.Config) http.HandlerFunc {
 		}
 
 		data := struct {
-			Nav     []config.NavItem
-			Title   string
-			Content template.HTML
-			Notes   []render.Content
+			Nav         []config.NavItem
+			Title       string
+			Description string
+			Content     template.HTML
+			Notes       []render.Content
 		}{
-			Nav:     cfg.Nav,
-			Title:   p.Title,
-			Content: template.HTML(string(p.Content)),
-			Notes:   notes,
+			Nav:         cfg.Nav,
+			Title:       p.Title,
+			Description: cfg.Description,
+			Content:     template.HTML(string(p.Content)),
+			Notes:       notes,
 		}
 
 		output, err := render.Template("notes", data)
@@ -193,13 +199,15 @@ func Note(cfg *config.Config) http.HandlerFunc {
 		}
 
 		data := struct {
-			Nav     []config.NavItem
-			Title   string
-			Content template.HTML
+			Nav         []config.NavItem
+			Title       string
+			Description string
+			Content     template.HTML
 		}{
-			Nav:     cfg.Nav,
-			Title:   p.Title,
-			Content: template.HTML(string(p.Content)),
+			Nav:         cfg.Nav,
+			Title:       p.Title,
+			Description: cfg.Description,
+			Content:     template.HTML(string(p.Content)),
 		}
 
 		output, err := render.Template("note", data)
@@ -245,15 +253,17 @@ func Blogs(cfg *config.Config) http.HandlerFunc {
 		}
 
 		data := struct {
-			Nav     []config.NavItem
-			Title   string
-			Content template.HTML
-			Blogs   []render.Content
+			Nav         []config.NavItem
+			Title       string
+			Description string
+			Content     template.HTML
+			Blogs       []render.Content
 		}{
-			Nav:     cfg.Nav,
-			Title:   p.Title,
-			Content: template.HTML(string(p.Content)),
-			Blogs:   blogs,
+			Nav:         cfg.Nav,
+			Title:       p.Title,
+			Description: cfg.Description,
+			Content:     template.HTML(string(p.Content)),
+			Blogs:       blogs,
 		}
 
 		output, err := render.Template("blogs", data)
@@ -291,13 +301,15 @@ func Blog(cfg *config.Config) http.HandlerFunc {
 		}
 
 		data := struct {
-			Nav     []config.NavItem
-			Title   string
-			Content template.HTML
+			Nav         []config.NavItem
+			Title       string
+			Description string
+			Content     template.HTML
 		}{
-			Nav:     cfg.Nav,
-			Title:   p.Title,
-			Content: template.HTML(string(p.Content)),
+			Nav:         cfg.Nav,
+			Title:       p.Title,
+			Description: cfg.Description,
+			Content:     template.HTML(string(p.Content)),
 		}
 
 		output, err := render.Template("note", data)

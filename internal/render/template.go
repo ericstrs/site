@@ -7,6 +7,7 @@ import (
 
 var (
 	tmplDir    = "public/templates"
+	headPath   = tmplDir + "/head.tmpl"
 	headerPath = tmplDir + "/header.tmpl"
 	footerPath = tmplDir + "/footer.tmpl"
 	homePath   = tmplDir + "/home.html" // path to the home html page
@@ -16,8 +17,9 @@ var (
 	notePath   = tmplDir + "/note.html"
 	blogsPath  = tmplDir + "/blogs.html"
 	blogPath   = tmplDir + "/blog.html"
-	templates  = template.Must(template.ParseFS(content, headerPath, footerPath, homePath, nfPath,
-		aboutPath, notesPath, notePath, blogsPath, blogPath))
+	templates  = template.Must(template.ParseFS(content, headPath,
+		headerPath, footerPath, homePath, nfPath, aboutPath, notesPath,
+		notePath, blogsPath, blogPath))
 )
 
 // Template renders the specified HTML template and returns it
