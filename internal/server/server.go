@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"crypto/tls"
 	"log/slog"
 	"net/http"
 	"os"
@@ -51,11 +52,15 @@ func Serve() {
 	server := &http.Server{
 		Addr:    addr,
 		Handler: handler,
+		TLSConfig: &tls.Config{
+			MinVersion:               tls.VersionTLS13,
+			PreferServerCipherSuites: true,
+		},
 	}
 
 	go func() {
 		logger.Info("Server is starting...", "addr", server.Addr)
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := server.ListenAndServeTLS("cert.pem", "key.pem"); err != nil && err != http.ErrServerClosed {
 			logger.Error("Server failed to serve", "err", err, "trace", trace)
 			os.Exit(1)
 		}
