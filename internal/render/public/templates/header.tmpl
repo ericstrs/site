@@ -1,12 +1,21 @@
 {{ define "header" }}
 <header>
   <nav>
-    <ul>
-      {{.Title}}
-      {{range .Nav}}
-        <li><a href="{{.URL}}">{{.Name}}</a></li>
-      {{end}}
-    </ul>
+    <div class="nav-container">
+      <div class="title">
+        <a href="/">{{.Title}}</a>
+      </div>
+      <ul class="nav-list nav-items">
+        {{range .Nav}}
+          <li><a href="{{.URL}}">{{.Name}}</a></li>
+        {{end}}
+      </ul>
+      <ul class="nav-list social-items">
+        {{range .Social}}
+          <li><a href="{{.URL}}">{{.Name}}</a></li>
+        {{end}}
+      </ul>
+    </div>
   </nav>
 </header>
 {{end}}

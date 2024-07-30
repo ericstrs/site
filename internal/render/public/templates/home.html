@@ -12,8 +12,8 @@
     <ul>
         {{range .RecentBlogs}}
         <li>
+            <small>{{.UpdatedAt.Format "January 02, 2006"}}</small>
             <a href="/blogs/{{.Id}}">{{.Title}}</a>
-            <small>Updated: {{.UpdatedAt.Format "2006-01-02"}}</small>
         </li>
         {{end}}
     </ul>
@@ -24,8 +24,8 @@
     <ul>
         {{range .RecentNotes}}
         <li>
+            <small>{{.UpdatedAt.Format "January 02, 2006"}}</small>
             <a href="/notes/{{.Id}}">{{.Title}}</a>
-            <small>Updated: {{.UpdatedAt.Format "2006-01-02"}}</small>
         </li>
         {{end}}
     </ul>

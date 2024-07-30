@@ -49,6 +49,7 @@ func Home(cfg *config.Config) http.HandlerFunc {
 
 		data := struct {
 			Nav         []config.NavItem
+			Social      []config.NavItem
 			Title       string
 			Description string
 			Content     template.HTML
@@ -56,6 +57,7 @@ func Home(cfg *config.Config) http.HandlerFunc {
 			RecentNotes []render.Content
 		}{
 			Nav:         cfg.Nav,
+			Social:      cfg.Social,
 			Title:       p.Title,
 			Description: cfg.Description,
 			Content:     template.HTML(string(p.Content)),
@@ -98,11 +100,13 @@ func About(cfg *config.Config) http.HandlerFunc {
 
 		data := struct {
 			Nav         []config.NavItem
+			Social      []config.NavItem
 			Title       string
 			Description string
 			Content     template.HTML
 		}{
 			Nav:         cfg.Nav,
+			Social:      cfg.Social,
 			Title:       p.Title,
 			Description: cfg.Description,
 			Content:     template.HTML(string(p.Content)),
@@ -152,12 +156,14 @@ func Notes(cfg *config.Config) http.HandlerFunc {
 
 		data := struct {
 			Nav         []config.NavItem
+			Social      []config.NavItem
 			Title       string
 			Description string
 			Content     template.HTML
 			Notes       []render.Content
 		}{
 			Nav:         cfg.Nav,
+			Social:      cfg.Social,
 			Title:       p.Title,
 			Description: cfg.Description,
 			Content:     template.HTML(string(p.Content)),
@@ -200,11 +206,13 @@ func Note(cfg *config.Config) http.HandlerFunc {
 
 		data := struct {
 			Nav         []config.NavItem
+			Social      []config.NavItem
 			Title       string
 			Description string
 			Content     template.HTML
 		}{
 			Nav:         cfg.Nav,
+			Social:      cfg.Social,
 			Title:       p.Title,
 			Description: cfg.Description,
 			Content:     template.HTML(string(p.Content)),
@@ -254,12 +262,14 @@ func Blogs(cfg *config.Config) http.HandlerFunc {
 
 		data := struct {
 			Nav         []config.NavItem
+			Social      []config.NavItem
 			Title       string
 			Description string
 			Content     template.HTML
 			Blogs       []render.Content
 		}{
 			Nav:         cfg.Nav,
+			Social:      cfg.Social,
 			Title:       p.Title,
 			Description: cfg.Description,
 			Content:     template.HTML(string(p.Content)),
@@ -302,11 +312,13 @@ func Blog(cfg *config.Config) http.HandlerFunc {
 
 		data := struct {
 			Nav         []config.NavItem
+			Social      []config.NavItem
 			Title       string
 			Description string
 			Content     template.HTML
 		}{
 			Nav:         cfg.Nav,
+			Social:      cfg.Social,
 			Title:       p.Title,
 			Description: cfg.Description,
 			Content:     template.HTML(string(p.Content)),

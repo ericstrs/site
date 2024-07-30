@@ -17,7 +17,7 @@ var (
 	notePath   = tmplDir + "/note.html"
 	blogsPath  = tmplDir + "/blogs.html"
 	blogPath   = tmplDir + "/blog.html"
-	templates  = template.Must(template.ParseFS(content, headPath,
+	templates  = template.Must(template.ParseFS(Public, headPath,
 		headerPath, footerPath, homePath, nfPath, aboutPath, notesPath,
 		notePath, blogsPath, blogPath))
 )

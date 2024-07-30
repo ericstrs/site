@@ -3,6 +3,8 @@ package server
 import (
 	"context"
 	"crypto/tls"
+	"io/fs"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -15,6 +17,7 @@ import (
 	"github.com/ericstrs/site/internal/config"
 	"github.com/ericstrs/site/internal/handlers"
 	"github.com/ericstrs/site/internal/middleware"
+	"github.com/ericstrs/site/internal/render"
 )
 
 func Serve() {
@@ -45,7 +48,14 @@ func Serve() {
 	mux.Handle("GET /blogs", middleware.LogRequest(handlers.Blogs(cfg)))
 	mux.Handle("GET /blogs/{id}", middleware.LogRequest(handlers.Blog(cfg)))
 
-	handler := middleware.PanicRecovery(mux)
+	publicFS, err := fs.Sub(render.Public, "public")
+	if err != nil {
+		log.Fatal(err)
+	}
+	mux.Handle("/", http.FileServer(http.FS(publicFS)))
+
+	handler := middleware.SecurityHeaders(mux)
+	handler = middleware.PanicRecovery(handler)
 
 	portStr := strconv.Itoa(cfg.Port)
 	addr := cfg.Host + ":" + portStr

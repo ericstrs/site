@@ -9,8 +9,8 @@
 		<ul>
         {{range .Notes}}
         <li>
+            <small>{{.UpdatedAt.Format "January 02, 2006"}}</small>
             <a href="/notes/{{.Id}}">{{.Title}}</a>
-            <small>Updated: {{.UpdatedAt.Format "2006-01-02"}}</small>
         </li>
         {{end}}
     </ul>

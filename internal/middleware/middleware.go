@@ -65,6 +65,7 @@ func SecurityHeaders(next http.Handler) http.Handler {
 		csp := []string{
 			"default-src 'self'",
 			"form-action 'self'",
+			"style-src 'self' 'unsafe-inline'", // Add this line
 			"object-src 'none'",
 			"frame-ancestors 'none'",
 			"upgrade-insecure-requests",
