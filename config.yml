@@ -9,17 +9,15 @@ syntax_highlighting:
 
 # Navigation Menu
 nav:
-  - name: "Home"
-    url: "/"
-  - name: "Blog"
+  - name: "blog"
     url: "/blog"
-  - name: "Notes"
+  - name: "notes"
     url: "/notes"
-  - name: "About"
+  - name: "about"
     url: "/about"
 
 social:
-  - name: "Twitter"
+  - name: "X"
     url: "https://twitter.com/ericstrs"
   - name: "GitHub"
     url: "https://github.com/ericstrs"
