@@ -10,7 +10,7 @@ syntax_highlighting:
 # Navigation Menu
 nav:
   - name: "blog"
-    url: "/blog"
+    url: "/blogs"
   - name: "notes"
     url: "/notes"
   - name: "about"
