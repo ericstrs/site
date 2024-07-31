@@ -4,16 +4,18 @@
 <body>
     {{template "header" .}}
 
-    {{.Content}}
+    <div class="content">{{.Content}}</div>
 
-		<ul>
-        {{range .Blogs}}
-        <li>
-            <small>{{.UpdatedAt.Format "January 02, 2006"}}</small>
-            <a href="/blogs/{{.Id}}">{{.Title}}</a>
-        </li>
-        {{end}}
-    </ul>
+    <div style="flex: 1">
+      <ul>
+          {{range .Blogs}}
+          <li>
+              <small>{{.UpdatedAt.Format "January 02, 2006"}}</small>
+              <a href="/blogs/{{.Id}}">{{.Title}}</a>
+          </li>
+          {{end}}
+      </ul>
+    </div>
 
     {{template "footer" .}}
 </body>
