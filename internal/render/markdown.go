@@ -22,6 +22,7 @@ func markdownToHTML(content []byte) ([]byte, error) {
 				highlighting.WithStyle("gruvbox"),
 				highlighting.WithFormatOptions(
 					chromahtml.WithLineNumbers(true),
+					chromahtml.WrapLongLines(true),
 				),
 			),
 		),
