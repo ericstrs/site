@@ -28,6 +28,74 @@ small {
 
 a {
   color: inherit;
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 0.1rem;
+  bottom: 0;
+  left: 0;
+  background-color: currentColor; /* This matches the text color */
+  transform-origin: left;
+}
+
+a:not(:hover)::after {
+  transform: scaleX(1);
+}
+
+a:hover {
+  color: mediumslateblue;
+}
+
+a:hover::after {
+  background-color: mediumslateblue;
+  transform: scaleX(0);
+  animation: link-hover 250ms ease-in-out forwards;
+}
+
+/* Remove permanent underline for .title and h1 and h2 links */
+a:has(h1), a:has(h2), .title a {
+  text-decoration: none;
+}
+
+a:has(h1)::after, a:has(h2)::after, .title a::after {
+  content: none;
+}
+
+/* Maintain hover effect for .title and h1 and h2 links */
+a:has(h1):hover, a:has(h2):hover, .title a:hover {
+  color: mediumslateblue;
+}
+
+a:has(h1):hover::after, a:has(h2):hover::after, .title a:hover::after {
+  content: '';
+  transform: scaleX(0);
+  animation: link-hover 250ms ease-in-out forwards;
+}
+
+@keyframes link-hover {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+a::selection,
+a h2::selection{
+  background-color: lime;
+  color: blue;
+}
+
+
+h2 {
+  margin: 0;
 }
 
 pre {
