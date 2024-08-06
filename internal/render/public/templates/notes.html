@@ -4,13 +4,11 @@
 <body>
     {{template "header" .}}
 
-    <div class="content">{{.Content}}</div>
-
-    <div style="flex: 1">
+    <div class="content">{{.Content}}
       <ul>
           {{range .Notes}}
           <li>
-              <small>{{.UpdatedAt.Format "January 02, 2006"}}</small>
+              <small>{{.UpdatedAt.Format "2 January 2006"}}</small>
               <a href="/notes/{{.Id}}">{{.Title}}</a>
           </li>
           {{end}}
