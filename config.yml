@@ -1,6 +1,6 @@
 # Site Configuration
 title: "ericstrs"
-url: "http://localhost"
+host: "localhost"
 port: 8080
 description: "My personal website where I share my thoughts and experiences on technology and life."
 syntax_highlighting:
