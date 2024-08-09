@@ -7,6 +7,8 @@ import (
 	"runtime/debug"
 	"strings"
 	"time"
+
+	"github.com/ericstrs/site/internal/config"
 )
 
 // LogRequest middleware function for logging requests
@@ -60,7 +62,7 @@ func PanicRecovery(next http.Handler) http.Handler {
 }
 
 // SecurityHeaders middleware function for logging requests
-func SecurityHeaders(next http.Handler) http.Handler {
+func SecurityHeaders(cfg *config.Config, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		csp := []string{
 			"default-src 'self'",
@@ -84,7 +86,7 @@ func SecurityHeaders(next http.Handler) http.Handler {
 		w.Header().Set("Cross-Origin-Resource-Policy", "same-origin")
 		w.Header().Set("Cache-Control", "no-store, max-age=0")
 
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", cfg.URL)
 		w.Header().Set("Access-Control-Allow-Credentials", "false")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Host, Origin, Referer, Accept, Content-Type, User-Agent, Cookie, X-Csrf-Token")

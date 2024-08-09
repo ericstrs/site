@@ -54,7 +54,7 @@ func Serve() {
 	}
 	mux.Handle("/", http.FileServer(http.FS(publicFS)))
 
-	handler := middleware.SecurityHeaders(mux)
+	handler := middleware.SecurityHeaders(cfg, mux)
 	handler = middleware.PanicRecovery(handler)
 
 	portStr := strconv.Itoa(cfg.Port)
