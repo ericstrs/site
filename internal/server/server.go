@@ -2,7 +2,7 @@ package server
 
 import (
 	"context"
-	"crypto/tls"
+	"errors"
 	"io/fs"
 	"log"
 	"log/slog"
@@ -59,18 +59,14 @@ func Serve() {
 
 	portStr := strconv.Itoa(cfg.Port)
 	addr := cfg.Host + ":" + portStr
-	server := &http.Server{
+	srv := &http.Server{
 		Addr:    addr,
 		Handler: handler,
-		TLSConfig: &tls.Config{
-			MinVersion:               tls.VersionTLS13,
-			PreferServerCipherSuites: true,
-		},
 	}
 
 	go func() {
-		logger.Info("Server is starting...", "addr", server.Addr)
-		if err := server.ListenAndServeTLS("cert.pem", "key.pem"); err != nil && err != http.ErrServerClosed {
+		logger.Info("Server is starting...", "addr", srv.Addr)
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logger.Error("Server failed to serve", "err", err, "trace", trace)
 			os.Exit(1)
 		}
@@ -86,7 +82,7 @@ func Serve() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	if err := server.Shutdown(ctx); err != nil {
+	if err := srv.Shutdown(ctx); err != nil {
 		logger.Error("Server shutdown failed", "err", err, "trace", trace)
 		os.Exit(1)
 	}
